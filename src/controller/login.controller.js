@@ -1,23 +1,23 @@
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
-import { userRepository } from "../repository/user.repository.js";
-
-const JWT_SECRET = process.env.JWT_SECRET || "un_secret_dev";
+import { loginService } from "../service/login.service.js";
 
 export const login = async (req, res) => {
   const { email, password } = req.body;
+
   try {
-    const user = await userRepository.findOne({ where: { email } });
-    if (!user) return res.status(404).json({ message: "User not found" });
+    const { token, user } = await loginService({ email, password });
 
-    const validPassword = await bcrypt.compare(password, user.password);
-    if (!validPassword)
-      return res.status(401).json({ message: "Email or password incorrect" });
-
-    const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET);
-
-    return res.status(200).json({ token });
+    return res.status(200).json({
+      message: "Login successful",
+      token,
+      user: user,
+    });
   } catch (error) {
-    return res.status(500).json({ message: "Error logging in", error });
+    if (
+      error.message === "User not found" ||
+      error.message === "Email or password incorrect"
+    ) {
+      return res.status(401).json({ message: error.message });
+    }
+    return res.status(500).json({ message: "Error logging in" });
   }
 };

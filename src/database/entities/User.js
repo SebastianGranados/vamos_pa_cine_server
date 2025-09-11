@@ -1,4 +1,5 @@
 import { EntitySchema } from "typeorm";
+import Role from "./Roles.js";
 
 export default new EntitySchema({
   name: "User",
@@ -37,6 +38,19 @@ export default new EntitySchema({
     deleted_at: {
       type: "timestamp",
       nullable: true,
+    },
+    role_id: {
+      type: "int",
+      nullable: false,
+      default: 1,
+    },
+  },
+  relations: {
+    role: {
+      type: "many-to-one",
+      target: Role,
+      joinColumn: { name: "role_id" },
+      eager: true,
     },
   },
 });

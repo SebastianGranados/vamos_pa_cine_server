@@ -1,18 +1,19 @@
-import jwt from "jsonwebtoken";
-
-const JWT_SECRET = process.env.JWT_SECRET || "un_secretor_dev";
+import { verifyToken } from "../util/jwt.util.js";
 
 export function authToken(req, res, next) {
   const authHeader = req.headers["authorization"];
   if (!authHeader) return res.status(401).json({ message: "Token required" });
 
-  const token = authHeader.split(" ")[1]; // ayuda
+  const token = authHeader.split(" ")[1];
 
   try {
-    const verifyToken = jwt.verify(token, JWT_SECRET);
+    const decoded = verifyToken(token);
 
-    req["user"] = verifyToken;
+    if (!decoded) {
+      return res.status(403).json({ message: "Invalid or expired token" });
+    }
 
+    req.user = decoded;
     next();
   } catch (error) {
     return res.status(403).json({ message: "Invalid or expired token" });
