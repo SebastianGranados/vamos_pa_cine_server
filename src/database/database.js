@@ -1,11 +1,11 @@
 import { DataSource } from "typeorm";
-
 import config from "../config/database.config.js";
 import User from "./entities/User.js";
+import Roles from "./entities/Roles.js";
 
 export const AppDataSource = new DataSource({
   type: "postgres",
   url: config.DATABASE_URL,
   synchronize: true,
-  entities: [User],
+  entities: [User, Roles],
 });
