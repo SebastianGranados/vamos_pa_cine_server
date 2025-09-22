@@ -25,7 +25,7 @@ export default new EntitySchema({
     },
     status: {
       type: "boolean",
-      default: true,
+      default: false,
     },
     created_at: {
       type: "timestamp",

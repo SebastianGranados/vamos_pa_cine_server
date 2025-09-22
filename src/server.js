@@ -5,10 +5,10 @@ import { AppDataSource } from "./database/database.js";
 
 AppDataSource.initialize()
   .then(() => {
-    console.log("Data Source has been initialized!");
+    console.log("Database connection established successfully");
   })
   .catch((err) => {
-    console.error("Error during Data Source initialization:", err);
+    console.error("Error during database initialization:", err);
   });
 
 app.listen(config.PORT, () => {
