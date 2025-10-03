@@ -10,9 +10,7 @@ export const signup = async (req, res) => {
 
     await sendVerificationEmail(newUser.email, newUser.tokenVerifyEmail);
 
-    return res
-      .status(201)
-      .json({ message: "User created successfully", user: newUser });
+    return res.status(201).json({ message: "User created successfully" });
   } catch (error) {
     if (error.message === "The email is already registered") {
       return res.status(400).json({ message: error.message });
@@ -28,9 +26,9 @@ export const verifyEmailController = async (req, res) => {
       return res.status(400).json({ message: "Verification token is missing" });
     }
 
-    await verifyEmailService(token);
+    const verifiedUser = await verifyEmailService(token);
 
-    return res.status(200).json({ message: "Account verified successfully" });
+    return res.status(200).json(verifiedUser);
   } catch (error) {
     return res.status(400).json({ message: "Error verifying account" });
   }

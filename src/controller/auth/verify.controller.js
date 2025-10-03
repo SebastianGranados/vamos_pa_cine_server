@@ -8,9 +8,9 @@ export const verifyEmailController = async (req, res) => {
       return res.status(400).json({ message: "Verification token is missing" });
     }
 
-    await verifyUserService(token);
+    const verification = await verifyUserService(token);
 
-    return res.status(200).json({ message: "Account verified successfully" });
+    return res.status(200).json(verification);
   } catch (error) {
     return res.status(400).json({ message: "Error verifying account" });
   }
