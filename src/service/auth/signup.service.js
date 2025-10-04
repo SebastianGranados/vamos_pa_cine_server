@@ -3,6 +3,7 @@ import {
   userRepository,
   findByEmail,
 } from "../../repository/user/user.repository.js";
+import jwt from "jsonwebtoken";
 
 export const signupService = async ({ name, last_name, email, password }) => {
   const existingUser = await findByEmail(email);
@@ -21,6 +22,15 @@ export const signupService = async ({ name, last_name, email, password }) => {
   });
 
   const savedUser = await userRepository.save(newUser);
+
+  const tokenVerifyEmail = jwt.sign(
+    { email: savedUser.email },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: "24h",
+    }
+  );
+
   const { password: userPassword, ...userWithoutPassword } = savedUser;
 
   return {
@@ -29,5 +39,6 @@ export const signupService = async ({ name, last_name, email, password }) => {
     last_name: userWithoutPassword.last_name,
     email: userWithoutPassword.email,
     status: userWithoutPassword.status,
+    tokenVerifyEmail,
   };
 };

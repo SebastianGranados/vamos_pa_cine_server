@@ -1,4 +1,6 @@
 import { signupService } from "../../service/auth/signup.service.js";
+import { sendVerificationEmail } from "../../email/email.service.js";
+import { verifyEmailService } from "../../service/auth/verify.service.js";
 
 export const signup = async (req, res) => {
   try {
@@ -6,13 +8,28 @@ export const signup = async (req, res) => {
 
     const newUser = await signupService({ name, last_name, email, password });
 
-    return res
-      .status(201)
-      .json({ message: "User created successfully", user: newUser });
+    await sendVerificationEmail(newUser.email, newUser.tokenVerifyEmail);
+
+    return res.status(201).json({ message: "User created successfully" });
   } catch (error) {
     if (error.message === "The email is already registered") {
       return res.status(400).json({ message: error.message });
     }
-    return res.status(500).json({ message: "Error registering user" });
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const verifyEmailController = async (req, res) => {
+  try {
+    const { token } = req.query;
+    if (!token) {
+      return res.status(400).json({ message: "Verification token is missing" });
+    }
+
+    const verifiedUser = await verifyEmailService(token);
+
+    return res.status(200).json(verifiedUser);
+  } catch (error) {
+    return res.status(400).json({ message: "Error verifying account" });
   }
 };
