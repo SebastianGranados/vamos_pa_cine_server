@@ -4,7 +4,8 @@ import fs from "fs";
 import path from "path";
 
 dotenv.config();
-
+console.log(process.env.CINEMA_EMAIL_USER);
+console.log(process.env.CINEMA_EMAIL_PASS);
 export const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
   port: 465,
