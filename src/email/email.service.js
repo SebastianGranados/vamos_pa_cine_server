@@ -4,7 +4,6 @@ import fs from "fs";
 import path from "path";
 
 dotenv.config();
-
 export const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
   port: 465,
